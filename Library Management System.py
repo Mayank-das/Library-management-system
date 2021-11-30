@@ -11,34 +11,34 @@ def add_button_hover_leave(e):
     add_button.config(bg="SystemButtonFace")
 
 def delete_button_hover(e):
-    delete_button["bg"]="#cccccc"
+    delete_button.config(bg="#cccccc")
     
 def delete_button_hover_leave(e):
-    delete_button["bg"]= "SystemButtonFace"
+    delete_button.config(bg="SystemButtonFace")
 
 def list_button_hover(e):
-    list_button["bg"]="#cccccc"
+    list_button.config(bg="#cccccc")
     
 def list_button_hover_leave(e):
-    list_button["bg"]= "SystemButtonFace"
+    list_button.config(bg="SystemButtonFace")
 
 def issue_button_hover(e):
-    issue_button["bg"]="#cccccc"
+    issue_button.config(bg="#cccccc")
     
 def issue_button_hover_leave(e):
-    issue_button["bg"]= "SystemButtonFace"
+    issue_button.config(bg="SystemButtonFace")
 
 def return_button_hover(e):
-    return_button["bg"]="#cccccc"
+    return_button.config(bg="#cccccc")
     
 def return_button_hover_leave(e):
-    return_button["bg"]= "SystemButtonFace"
+    return_button.config(bg="SystemButtonFace")
 
 def confirm_button_hover(e):
-    confirm_button["bg"]="#cccccc"
+    confirm_button.config(bg="#cccccc")
     
 def confirm_button_hover_leave(e):
-    confirm_button["bg"]= "SystemButtonFace"
+    confirm_button.config(bg="SystemButtonFace")
 
 def back_button_hover(e):
     back_button.config(bg="#cccccc")
@@ -46,53 +46,43 @@ def back_button_hover(e):
 def back_button_hover_leave(e):
     back_button.config(bg="SystemButtonFace")
 
-def delete_button2_hover(e):
-    delete_button2["bg"]="#cccccc"
-    
-def delete_button2_hover_leave(e):
-    delete_button2["bg"]= "SystemButtonFace"
-
 def continue_button_hover(e):
-    continue_button["bg"]="#cccccc"
+    continue_button.config(bg="#cccccc")
     
 def continue_button_hover_leave(e):
-    continue_button["bg"]= "SystemButtonFace"
-
-# def issue_button2_hover(e):
-#     issue_button2["bg"]="#cccccc"
-    
-# def issue_button2_hover_leave(e):
-#     issue_button2["bg"]= "SystemButtonFace"
-
-# def return_button2_hover(e):
-#     return_button2["bg"]="#cccccc"
-    
-# def return_button2_hover_leave(e):
-#     return_button2["bg"]= "SystemButtonFace"
+    continue_button.config(bg="SystemButtonFace")
 
 # back button
 def back_button_func(text2):
     global back_button
-    back_button = Button(win, text="← Back", font="time 15 bold", command= lambda: back_func(text2))
+    
+    back_button = Button(win, text="← Back", font="time 15 bold", activebackground='#d3b99e',activeforeground='white', command= lambda: back_func(text2))
     back_button_window = my_canvas.create_window(40,40, anchor='nw', window=back_button)
     back_button.bind("<Enter>", back_button_hover)
     back_button.bind("<Leave>", back_button_hover_leave)
 
-# back from frame 2 to frame 1
-def back_func(fr):
-    headline_label.destroy()
-    headline(260,30,"Library Management System")
-    fr.destroy()
-    back_button.destroy()
-    frame1()
+    # back from another frame to frame 1
+    def back_func(fr):
+        headline_label.destroy()
+        headline(260,30,"Library Management System")
+        back_button.destroy()
+        fr.destroy()
+        frame1()
 
-# back from frame 3 to frame 1
-# def back_from_f3tof1():
-#     headline_label.destroy()
-#     headline(260,30,"Library Management System")
-#     f3.destroy()
-#     back_button.destroy()
-#     frame1()
+# back from frame 6 to frame 5
+def back_from_f6tof5(hn, func_n):
+    global back_button
+    back_button = Button(win, text="← Back", font="time 15 bold", activebackground='#d3b99e', activeforeground='white', command= lambda: back_func2(hn, func_n))
+    back_button_window = my_canvas.create_window(40,40, anchor='nw', window=back_button)
+    back_button.bind("<Enter>", back_button_hover)
+    back_button.bind("<Leave>", back_button_hover_leave)
+
+    def back_func2(hn, func_n):
+        # headline_label.destroy()
+        # headline(260,30,"Library Management System")
+        f6.destroy()
+        back_button.destroy()
+        frame5(325,30,hn, func_n)
 
 # confirm button function
 def confirm_func():
@@ -102,15 +92,42 @@ def confirm_func():
 
 # delete button function
 def delete_func():
-    value = msg.askyesno("Deleting book to library", "Confirm ! Do you want to delete book from Library")
+    value = msg.askyesno("Deleting book from library", "Confirm ! Do you want to delete book from Library")
     if value:
-        msg.askokcancel("Deleting book to library", "Congratulation you successfully delete the book")
+        msg.askokcancel("Deleting book from library", "Congratulation you successfully delete the book")
 
 # Issue's continue button function
-def continue_func(a, b):
+def continue_func(rn, na, hn, func_n):
     # if roll_no ==  or name ==
     f5.destroy()
-    frame6(a,b)
+    back_button.destroy()
+    frame6(rn,na, hn, func_n)
+
+# Issue book function
+def issue_func():
+    global issue_button
+    issue_button = Button(f6, text="Issue", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: issue())
+    issue_button.grid(row = 4, column=1,pady=30)
+    issue_button.bind("<Enter>", issue_button_hover)
+    issue_button.bind("<Leave>", issue_button_hover_leave)
+
+    def issue():
+        value = msg.askyesno("Issue book from library", "Confirm ! Do you want to issue book from Library")
+        if value:
+            msg.askokcancel("Issue book from library", "Congratulation you successfully issue the book")
+
+# Return book function
+def return_func():
+    global return_button
+    return_button = Button(f6, text="Return", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: returns())
+    return_button.grid(row = 4, column=1,pady=30)
+    return_button.bind("<Enter>", return_button_hover)
+    return_button.bind("<Leave>", return_button_hover_leave)
+
+    def returns():
+        value = msg.askyesno("return book from library", "Confirm ! Do you want to return book from Library")
+        if value:
+            msg.askokcancel("return book from library", "Congratulation you successfully return the book")
 
 # Frame 1  -------------------------------->
 def frame1():
@@ -132,15 +149,15 @@ def frame1():
     img_label5.grid(row=2, column=3, pady=(30,10))
 
     # adding buttons
-    add_button = Button(f1, text='Add Book', font="Times 20", activebackground="#d3b99e", command=frame2)
+    add_button = Button(f1, text='Add Book', font="Times 20", activebackground="#d3b99e",activeforeground="white", command=frame2)
     add_button.grid(row=1, column=0, padx=(50,0))
-    delete_button = Button(f1, text='Delete Book', font="Times 20", activebackground="#d3b99e", command=frame3)
+    delete_button = Button(f1, text='Delete Book', font="Times 20", activebackground="#d3b99e", activeforeground='white', command=frame3)
     delete_button.grid(row=1, column=2)
-    list_button = Button(f1, text='Books List', font="Times 20", activebackground="#d3b99e")
+    list_button = Button(f1, text='Books List', font="Times 20", activebackground="#d3b99e",activeforeground='white')
     list_button.grid(row=1, column=4, padx=(0,50))
-    issue_button = Button(f1, text='Issue Book', font="Times 20", activebackground="#d3b99e", command=frame5)
+    issue_button = Button(f1, text='Issue Book', font="Times 20", activebackground="#d3b99e", activeforeground='white', command=lambda: frame5(325,30,"Issue Book from Library", issue_func))
     issue_button.grid(row=3, column=1, pady=(0,30))
-    return_button = Button(f1, text='Return Book', font="Times 20", activebackground="#d3b99e")
+    return_button = Button(f1, text='Return Book', font="Times 20", activeforeground='white', activebackground="#d3b99e", command=lambda: frame5(325,30,"Return Book to Library", return_func))
     return_button.grid(row=3, column=3, pady=(0,30))
 
     # Hover effect on Buttons
@@ -181,7 +198,7 @@ def frame2():
     author_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
     
     # confirm button
-    confirm_button = Button(f2, text="Confirm", font="Times 15 bold", activebackground="#d3b99e", command=confirm_func)
+    confirm_button = Button(f2, text="Confirm", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=confirm_func)
     confirm_button.grid(row = 2, column=1,pady=30)
     confirm_button.bind("<Enter>", confirm_button_hover)
     confirm_button.bind("<Leave>", confirm_button_hover_leave)
@@ -190,7 +207,7 @@ def frame2():
 
 # Frame 3 --------------------------->
 def frame3():
-    global f3,delete_button2
+    global f3,delete_button
     f1.destroy()
     headline_label.destroy()
     headline(280,30,"Deleting Book from Library")
@@ -213,10 +230,10 @@ def frame3():
     author_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
 
     # delete button
-    delete_button2 = Button(f3, text="Delete", font="Times 15 bold", activebackground="#d3b99e", command=delete_func)
-    delete_button2.grid(row = 2, column=1,pady=30)
-    delete_button2.bind("<Enter>", delete_button2_hover)
-    delete_button2.bind("<Leave>", delete_button2_hover_leave)
+    delete_button = Button(f3, text="Delete", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=delete_func)
+    delete_button.grid(row = 2, column=1,pady=30)
+    delete_button.bind("<Enter>", delete_button_hover)
+    delete_button.bind("<Leave>", delete_button_hover_leave)
 
     back_button_func(f3)
 
@@ -225,11 +242,11 @@ def frame3():
 #     pass
 
 # # Frame 5 --------------------------->
-def frame5():
-    global f5, continue_button
+def frame5(x,y,had_name, func_n):
+    global f5, continue_button, roll_no, name
     f1.destroy()
     headline_label.destroy()
-    headline(325,30,"Issue Book from Library")
+    headline(x,y,had_name)
 
     # creating Frame 5
     f5 = Frame(win, bg='#d3b99e')
@@ -248,20 +265,21 @@ def frame5():
     name_entry = Entry(f5, textvariable=name, font= "Times 20")
     name_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
 
+    back_button_func(f5)
     # continue button
-    continue_button = Button(f5, text="Continue", font="Times 15 bold", activebackground="#d3b99e", command=lambda: continue_func(roll_no.get(), name.get()))
+    continue_button = Button(f5, text="Continue", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: continue_func(roll_no.get(), name.get(), had_name, func_n))
     continue_button.grid(row = 2, column=1,pady=30)
     continue_button.bind("<Enter>", continue_button_hover)
     continue_button.bind("<Leave>", continue_button_hover_leave)
 
-    print(f"roll no = {roll_no.get()} \nname = {name.get()}")
-    back_button_func(f5)
+    # print(f"roll no = {roll_no.get()} \nname = {name.get()}")
+    
 
 # # Frame 6 --------------------------->
-def frame6(a,b):
+def frame6(rn, na, hn, func_n):
     global f6, continue_button
     headline_label.destroy()
-    headline(325,30,"Issue Book from Library")
+    headline(325,30,hn)
 
     # creating Frame 6
     f6 = Frame(win, bg='#d3b99e')
@@ -271,8 +289,8 @@ def frame6(a,b):
     roll_no_label = Label(f6, text="Roll no. :- ", font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=0,padx=(50,0), pady=(60,20))
     name_label = Label(f6, text="Name :- ", font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=0,padx=(50,0), pady=(0,20))
 
-    print_roll_no = Label(f6, text=a , font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=2,padx=(50,0), pady=(60,20))
-    print_name = Label(f6, text=b , font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=2,padx=(50,0), pady=(0,20))
+    print_roll_no = Label(f6, text=rn , font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=2,padx=(50,0), pady=(60,20))
+    print_name = Label(f6, text=na , font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=2,padx=(50,0), pady=(0,20))
 
     # book & author label
     book_name_label = Label(f6, text="Enter Book name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 2, column=0,padx=(50,0), pady=30)
@@ -287,7 +305,10 @@ def frame6(a,b):
     author_entry = Entry(f6, textvariable=author_name, font= "Times 20")
     author_entry.grid(row = 3, column=2,padx=(0,50), pady=30, columnspan=2)
 
-    back_button_func(f6)
+    # issue button
+    func_n()
+
+    back_from_f6tof5(hn, func_n)
 
 if __name__=='__main__':
     # Normal initializing of the program
