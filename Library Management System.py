@@ -1,7 +1,6 @@
 from tkinter import *
 from PIL import Image, ImageTk
 import tkinter.messagebox as msg
-from tkinter import ttk
 
 # hover effect
 def add_button_hover(e):
@@ -85,16 +84,30 @@ def back_from_f6tof5(hn, func_n):
         frame5(325,30,hn, func_n)
 
 # confirm button function
-def confirm_func():
-    value = msg.askyesno("Adding book to library", "Confirm ! Do you want to add book in Library")
-    if value:
-        msg.askokcancel("Adding book to library", "Congratulation your book added successfully")
+def confirm_button_func():
+    global confirm_button
+    confirm_button = Button(f2, text="Confirm", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: confirm_func())
+    confirm_button.grid(row = 2, column=1,pady=30)
+    confirm_button.bind("<Enter>", confirm_button_hover)
+    confirm_button.bind("<Leave>", confirm_button_hover_leave)
+
+    def confirm_func():
+        value = msg.askyesno("Adding book to library", "Confirm ! Do you want to add book in Library")
+        if value:
+            msg.askokcancel("Adding book to library", "Congratulation your book added successfully")
 
 # delete button function
-def delete_func():
-    value = msg.askyesno("Deleting book from library", "Confirm ! Do you want to delete book from Library")
-    if value:
-        msg.askokcancel("Deleting book from library", "Congratulation you successfully delete the book")
+def delete_button_func():
+    global delete_button
+    delete_button = Button(f2, text="Delete", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: delete_func())
+    delete_button.grid(row = 2, column=1,pady=30)
+    delete_button.bind("<Enter>", delete_button_hover)
+    delete_button.bind("<Leave>", delete_button_hover_leave)
+
+    def delete_func():
+        value = msg.askyesno("Deleting book from library", "Confirm ! Do you want to delete book from Library")
+        if value:
+            msg.askokcancel("Deleting book from library", "Congratulation you successfully delete the book")
 
 # Issue's continue button function
 def continue_func(rn, na, hn, func_n):
@@ -125,9 +138,9 @@ def return_func():
     return_button.bind("<Leave>", return_button_hover_leave)
 
     def returns():
-        value = msg.askyesno("return book from library", "Confirm ! Do you want to return book from Library")
+        value = msg.askyesno("Return book from library", "Confirm ! Do you want to return book to Library")
         if value:
-            msg.askokcancel("return book from library", "Congratulation you successfully return the book")
+            msg.askokcancel("Return book from library", "Congratulation you successfully return the book")
 
 # Frame 1  -------------------------------->
 def frame1():
@@ -149,9 +162,9 @@ def frame1():
     img_label5.grid(row=2, column=3, pady=(30,10))
 
     # adding buttons
-    add_button = Button(f1, text='Add Book', font="Times 20", activebackground="#d3b99e",activeforeground="white", command=frame2)
+    add_button = Button(f1, text='Add Book', font="Times 20", activebackground="#d3b99e",activeforeground="white", command=lambda: frame2(338,30, "Adding Book to Library", confirm_button_func))
     add_button.grid(row=1, column=0, padx=(50,0))
-    delete_button = Button(f1, text='Delete Book', font="Times 20", activebackground="#d3b99e", activeforeground='white', command=frame3)
+    delete_button = Button(f1, text='Delete Book', font="Times 20", activebackground="#d3b99e", activeforeground='white', command=lambda: frame2(280,30, "Deleting Book from Library", delete_button_func))
     delete_button.grid(row=1, column=2)
     list_button = Button(f1, text='Books List', font="Times 20", activebackground="#d3b99e",activeforeground='white')
     list_button.grid(row=1, column=4, padx=(0,50))
@@ -173,12 +186,12 @@ def frame1():
     return_button.bind("<Leave>", return_button_hover_leave)
 
 # Frame 2 --------------------------->
-def frame2():
-    global f2, confirm_button
+def frame2(x, y, head_name, btn):
+    global f2
 
     f1.destroy()
     headline_label.destroy()
-    headline(338,30,"Adding Book to Library")
+    headline(x, y, head_name)
 
     # creating Frame 2
     f2 = Frame(win, bg='#d3b99e')
@@ -197,45 +210,41 @@ def frame2():
     author_entry = Entry(f2, textvariable=author_name, font= "Times 20")
     author_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
     
-    # confirm button
-    confirm_button = Button(f2, text="Confirm", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=confirm_func)
-    confirm_button.grid(row = 2, column=1,pady=30)
-    confirm_button.bind("<Enter>", confirm_button_hover)
-    confirm_button.bind("<Leave>", confirm_button_hover_leave)
+    btn()
 
     back_button_func(f2)
 
-# Frame 3 --------------------------->
-def frame3():
-    global f3,delete_button
-    f1.destroy()
-    headline_label.destroy()
-    headline(280,30,"Deleting Book from Library")
+# # Frame 3 --------------------------->
+# def frame3():
+#     global f3,delete_button
+#     f1.destroy()
+#     headline_label.destroy()
+#     headline(280,30,"Deleting Book from Library")
     
-    # creating Frame 3
-    f3 = Frame(win, bg='#d3b99e')
-    f3_window = my_canvas.create_window(330,190, anchor='nw', window=f3)
+#     # creating Frame 3
+#     f3 = Frame(win, bg='#d3b99e')
+#     f3_window = my_canvas.create_window(330,190, anchor='nw', window=f3)
 
-    # book & author label
-    book_name_label = Label(f3, text="Enter Book name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
-    author_name_label = Label(f3, text="Enter Author name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=0,padx=(50,0), pady=30)
+#     # book & author label
+#     book_name_label = Label(f3, text="Enter Book name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
+#     author_name_label = Label(f3, text="Enter Author name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=0,padx=(50,0), pady=30)
 
-    # book & author entry
-    book_name = StringVar()
-    author_name = StringVar()
+#     # book & author entry
+#     book_name = StringVar()
+#     author_name = StringVar()
 
-    book_entry = Entry(f3, textvariable=book_name, font= "Times 20")
-    book_entry.grid(row = 0, column=2,padx=(0,50), pady=(60,30), columnspan=2)
-    author_entry = Entry(f3, textvariable=author_name, font= "Times 20")
-    author_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
+#     book_entry = Entry(f3, textvariable=book_name, font= "Times 20")
+#     book_entry.grid(row = 0, column=2,padx=(0,50), pady=(60,30), columnspan=2)
+#     author_entry = Entry(f3, textvariable=author_name, font= "Times 20")
+#     author_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
 
-    # delete button
-    delete_button = Button(f3, text="Delete", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=delete_func)
-    delete_button.grid(row = 2, column=1,pady=30)
-    delete_button.bind("<Enter>", delete_button_hover)
-    delete_button.bind("<Leave>", delete_button_hover_leave)
-
-    back_button_func(f3)
+#     # delete button
+#     # delete_button = Button(f3, text="Delete", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=delete_func)
+#     # delete_button.grid(row = 2, column=1,pady=30)
+#     # delete_button.bind("<Enter>", delete_button_hover)
+#     # delete_button.bind("<Leave>", delete_button_hover_leave)
+#     delete_button_func()
+#     back_button_func(f3)
 
 # Frame 4 --------------------------->
 # def frame4():
@@ -305,7 +314,7 @@ def frame6(rn, na, hn, func_n):
     author_entry = Entry(f6, textvariable=author_name, font= "Times 20")
     author_entry.grid(row = 3, column=2,padx=(0,50), pady=30, columnspan=2)
 
-    # issue button
+    # issue/return button function call
     func_n()
 
     back_from_f6tof5(hn, func_n)
