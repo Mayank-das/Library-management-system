@@ -1,5 +1,6 @@
 from tkinter import *
 from PIL import Image, ImageTk
+from tkinter import ttk
 import tkinter.messagebox as msg
 
 # hover effect
@@ -55,7 +56,7 @@ def continue_button_hover_leave(e):
 def back_button_func(text2):
     global back_button
     
-    back_button = Button(win, text="← Back", font="time 15 bold", activebackground='#d3b99e',activeforeground='white', command= lambda: back_func(text2))
+    back_button = Button(win, text="← Back", font="time 15 bold", activebackground='#d3d3d3',activeforeground='white', command= lambda: back_func(text2))
     back_button_window = my_canvas.create_window(40,40, anchor='nw', window=back_button)
     back_button.bind("<Enter>", back_button_hover)
     back_button.bind("<Leave>", back_button_hover_leave)
@@ -69,24 +70,22 @@ def back_button_func(text2):
         frame1()
 
 # back from frame 6 to frame 5
-def back_from_f6tof5(hn, func_n):
+def back_from_f5tof4(x, y, hn, func_n):
     global back_button
-    back_button = Button(win, text="← Back", font="time 15 bold", activebackground='#d3b99e', activeforeground='white', command= lambda: back_func2(hn, func_n))
+    back_button = Button(win, text="← Back", font="time 15 bold", activebackground='#d3d3d3', activeforeground='white', command= lambda: back_func2(hn, func_n))
     back_button_window = my_canvas.create_window(40,40, anchor='nw', window=back_button)
     back_button.bind("<Enter>", back_button_hover)
     back_button.bind("<Leave>", back_button_hover_leave)
 
     def back_func2(hn, func_n):
-        # headline_label.destroy()
-        # headline(260,30,"Library Management System")
-        f6.destroy()
+        f5.destroy()
         back_button.destroy()
-        frame5(325,30,hn, func_n)
+        frame4(x,y,hn, func_n)
 
 # confirm button function
 def confirm_button_func():
     global confirm_button
-    confirm_button = Button(f2, text="Confirm", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: confirm_func())
+    confirm_button = Button(f2, text="Confirm", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command=lambda: confirm_func())
     confirm_button.grid(row = 2, column=1,pady=30)
     confirm_button.bind("<Enter>", confirm_button_hover)
     confirm_button.bind("<Leave>", confirm_button_hover_leave)
@@ -99,7 +98,7 @@ def confirm_button_func():
 # delete button function
 def delete_button_func():
     global delete_button
-    delete_button = Button(f2, text="Delete", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: delete_func())
+    delete_button = Button(f2, text="Delete", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command=lambda: delete_func())
     delete_button.grid(row = 2, column=1,pady=30)
     delete_button.bind("<Enter>", delete_button_hover)
     delete_button.bind("<Leave>", delete_button_hover_leave)
@@ -110,16 +109,23 @@ def delete_button_func():
             msg.askokcancel("Deleting book from library", "Congratulation you successfully delete the book")
 
 # Issue's continue button function
-def continue_func(rn, na, hn, func_n):
-    # if roll_no ==  or name ==
-    f5.destroy()
-    back_button.destroy()
-    frame6(rn,na, hn, func_n)
+def continue_func(x,y,rn, na, hn, func_n):
+    if rn == "" or na == "":
+        msg.askokcancel("Library Management System", "No Name or Roll no is found ! So please enter Name and Roll no")
+    
+    else :
+        try:
+            int(rn)
+            f4.destroy()
+            back_button.destroy()
+            frame5(x,y,rn,na, hn, func_n)
+        except:
+            msg.askokcancel("Library Management System", "Roll no must be integer ! So please enter right Roll no")
 
 # Issue book function
 def issue_func():
     global issue_button
-    issue_button = Button(f6, text="Issue", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: issue())
+    issue_button = Button(f5, text="Issue", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command=lambda: issue())
     issue_button.grid(row = 4, column=1,pady=30)
     issue_button.bind("<Enter>", issue_button_hover)
     issue_button.bind("<Leave>", issue_button_hover_leave)
@@ -132,7 +138,7 @@ def issue_func():
 # Return book function
 def return_func():
     global return_button
-    return_button = Button(f6, text="Return", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: returns())
+    return_button = Button(f5, text="Return", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command=lambda: returns())
     return_button.grid(row = 4, column=1,pady=30)
     return_button.bind("<Enter>", return_button_hover)
     return_button.bind("<Leave>", return_button_hover_leave)
@@ -146,31 +152,31 @@ def return_func():
 def frame1():
     global add_button, delete_button, list_button, issue_button, return_button,f1
     # Create a frame
-    f1 = Frame(win, bg='#d3b99e')
+    f1 = Frame(win, bg='#d3d3d3')
     f1_window = my_canvas.create_window(260,150, anchor='nw', window=f1)
 
     # adding imaeges
-    img_label1 = Label(f1, image=img1, bg='#d3b99e', borderwidth=0)
+    img_label1 = Label(f1, image=img1, bg='#d3d3d3', borderwidth=0)
     img_label1.grid(row=0, column=0, padx=(50,0), pady=(30,10))
-    img_label2 = Label(f1, image=img2, bg='#d3b99e')
+    img_label2 = Label(f1, image=img2, bg='#d3d3d3')
     img_label2.grid(row=0, column=2, pady=(30,10))
-    img_label3 = Label(f1, image=img3, bg='#d3b99e')
+    img_label3 = Label(f1, image=img3, bg='#d3d3d3')
     img_label3.grid(row=0, column=4, padx=(0,50), pady=(30,10))
-    img_label4 = Label(f1, image=img4, bg='#d3b99e')
+    img_label4 = Label(f1, image=img4, bg='#d3d3d3')
     img_label4.grid(row=2, column=1, pady=(30,10))
-    img_label5 = Label(f1, image=img5, bg='#d3b99e')
+    img_label5 = Label(f1, image=img5, bg='#d3d3d3')
     img_label5.grid(row=2, column=3, pady=(30,10))
 
     # adding buttons
-    add_button = Button(f1, text='Add Book', font="Times 20", activebackground="#d3b99e",activeforeground="white", command=lambda: frame2(338,30, "Adding Book to Library", confirm_button_func))
+    add_button = Button(f1, text='Add Book', font="Times 20", activebackground="#d3d3d3",activeforeground="white", command=lambda: frame2(338,30, "Adding Book to Library", confirm_button_func))
     add_button.grid(row=1, column=0, padx=(50,0))
-    delete_button = Button(f1, text='Delete Book', font="Times 20", activebackground="#d3b99e", activeforeground='white', command=lambda: frame2(280,30, "Deleting Book from Library", delete_button_func))
+    delete_button = Button(f1, text='Delete Book', font="Times 20", activebackground="#d3d3d3", activeforeground='white', command=lambda: frame2(280,30, "Deleting Book from Library", delete_button_func))
     delete_button.grid(row=1, column=2)
-    list_button = Button(f1, text='Books List', font="Times 20", activebackground="#d3b99e",activeforeground='white')
+    list_button = Button(f1, text='Books List', font="Times 20", activebackground="#d3d3d3",activeforeground='white', command=lambda: frame3())
     list_button.grid(row=1, column=4, padx=(0,50))
-    issue_button = Button(f1, text='Issue Book', font="Times 20", activebackground="#d3b99e", activeforeground='white', command=lambda: frame5(325,30,"Issue Book from Library", issue_func))
+    issue_button = Button(f1, text='Issue Book', font="Times 20", activebackground="#d3d3d3", activeforeground='white', command=lambda: frame4(325,30,"Issue Book from Library", issue_func))
     issue_button.grid(row=3, column=1, pady=(0,30))
-    return_button = Button(f1, text='Return Book', font="Times 20", activeforeground='white', activebackground="#d3b99e", command=lambda: frame5(325,30,"Return Book to Library", return_func))
+    return_button = Button(f1, text='Return Book', font="Times 20", activeforeground='white', activebackground="#d3d3d3", command=lambda: frame4(340,30,"Return Book to Library", return_func))
     return_button.grid(row=3, column=3, pady=(0,30))
 
     # Hover effect on Buttons
@@ -194,12 +200,12 @@ def frame2(x, y, head_name, btn):
     headline(x, y, head_name)
 
     # creating Frame 2
-    f2 = Frame(win, bg='#d3b99e')
+    f2 = Frame(win, bg='#d3d3d3')
     f2_window = my_canvas.create_window(330,190, anchor='nw', window=f2)
 
     # book & author label
-    book_name_label = Label(f2, text="Enter Book name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
-    author_name_label = Label(f2, text="Enter Author name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=0,padx=(50,0), pady=30)
+    book_name_label = Label(f2, text="Enter Book name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
+    author_name_label = Label(f2, text="Enter Author name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 1, column=0,padx=(50,0), pady=30)
 
     # book & author entry
     book_name = StringVar()
@@ -214,110 +220,149 @@ def frame2(x, y, head_name, btn):
 
     back_button_func(f2)
 
-# # Frame 3 --------------------------->
-# def frame3():
-#     global f3,delete_button
-#     f1.destroy()
-#     headline_label.destroy()
-#     headline(280,30,"Deleting Book from Library")
+# Frame 3 --------------------------->
+def frame3():
+    global f3,delete_button
+    f1.destroy()
+    headline_label.destroy()
+    headline(375,30,"All Books in Library")
     
-#     # creating Frame 3
-#     f3 = Frame(win, bg='#d3b99e')
-#     f3_window = my_canvas.create_window(330,190, anchor='nw', window=f3)
+    # creating Frame 3
+    f3 = Frame(win, bg='#d3d3d3')
+    f3_window = my_canvas.create_window(400,190, anchor='nw', window=f3)
 
-#     # book & author label
-#     book_name_label = Label(f3, text="Enter Book name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
-#     author_name_label = Label(f3, text="Enter Author name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=0,padx=(50,0), pady=30)
+    # Treeview Scrollbar
+    tree_scroll = Scrollbar(f3, bg="#d3d3d3")
+    tree_scroll.pack(side=RIGHT, fill=Y, pady=20, padx=(0,20))
 
-#     # book & author entry
-#     book_name = StringVar()
-#     author_name = StringVar()
+    # styling for treeview --------------->
+    style = ttk.Style()
+    # pick a theme
+    style.theme_use("clam")
 
-#     book_entry = Entry(f3, textvariable=book_name, font= "Times 20")
-#     book_entry.grid(row = 0, column=2,padx=(0,50), pady=(60,30), columnspan=2)
-#     author_entry = Entry(f3, textvariable=author_name, font= "Times 20")
-#     author_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
+    # configure our treeview colors, row height
+    style.configure("Treeview",
+        background="#d3d3d3",
+        foreground="black",
+        rowheight=35,
+        font="times 13 ",
+        fieldbackground="#d3d3d3"
+        )
 
-#     # delete button
-#     # delete_button = Button(f3, text="Delete", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=delete_func)
-#     # delete_button.grid(row = 2, column=1,pady=30)
-#     # delete_button.bind("<Enter>", delete_button_hover)
-#     # delete_button.bind("<Leave>", delete_button_hover_leave)
-#     delete_button_func()
-#     back_button_func(f3)
+    # Change selected color
+    style.map("Treeview",
+        background=[('selected', 'purple')]
+        )
+
+    # create a function to lock the size of column width
+    def handle_click(e):
+        if my_tree.identify_region(e.x, e.y) == "separator":
+            return "break"
+
+    # Create a treeview
+    my_tree = ttk.Treeview(f3, yscrollcommand= tree_scroll.set, height=10)  # height is by deafult 10(how many rows)
+    my_tree.pack(padx=(20,0), pady=20)
+    my_tree.bind('<Button-1>', handle_click)
+    # configure the scrollbar
+    tree_scroll.config(command=my_tree.yview)
+
+    # define our columns 
+    my_tree['columns']= ("Name", "L_Name")
+
+    # formate our columns
+    my_tree.column('#0', width=80, minwidth=0)
+    my_tree.column('Name', anchor=CENTER, width=200, minwidth=50)
+    my_tree.column('L_Name', anchor=CENTER, width=200)
+
+    # create headings
+    my_tree.heading("#0", text="No.", anchor=W)
+    my_tree.heading("Name",text="Name", anchor=CENTER)
+    my_tree.heading("L_Name",text="Last Name", anchor=CENTER)
+    # change font of heading
+    style.configure("Treeview.Heading", font="times 15 bold")
+
+    # create striped row(colorful in odd or even order) tags
+    my_tree.tag_configure("oddrow", background="white")
+    my_tree.tag_configure("evenrow", background="lightblue")
+
+    cont = 0
+    for item in books_list:
+        if cont % 2 == 0:
+            my_tree.insert(parent='', index='end', iid=cont, text=str((cont+1)), values=item, tags=("evenrow"))
+        else:
+            my_tree.insert(parent='', index='end', iid=cont, text=str((cont+1)), values=item, tags=("oddrow"))
+
+        cont +=1
+
+    back_button_func(f3)
+
 
 # Frame 4 --------------------------->
-# def frame4():
-#     pass
-
-# # Frame 5 --------------------------->
-def frame5(x,y,had_name, func_n):
-    global f5, continue_button, roll_no, name
+def frame4(x,y,had_name, func_n):
+    global f4, continue_button, roll_no, name
     f1.destroy()
     headline_label.destroy()
     headline(x,y,had_name)
 
-    # creating Frame 5
-    f5 = Frame(win, bg='#d3b99e')
-    f5_window = my_canvas.create_window(330,190, anchor='nw', window=f5)
+    # creating Frame 4
+    f4 = Frame(win, bg='#d3d3d3')
+    f4_window = my_canvas.create_window(330,190, anchor='nw', window=f4)
 
     # for ask roll no & name label
-    roll_no_label = Label(f5, text="Enter Roll no. - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
-    name_label = Label(f5, text="Enter Your Name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=0,padx=(50,0), pady=30)
+    roll_no_label = Label(f4, text="Enter Roll no. - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
+    name_label = Label(f4, text="Enter Your Name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 1, column=0,padx=(50,0), pady=30)
 
     # roll no & name entry
     roll_no = StringVar()
     name = StringVar()
 
-    roll_no_entry = Entry(f5, textvariable=roll_no, font= "Times 20")
+    roll_no.set("")
+
+    roll_no_entry = Entry(f4, textvariable=roll_no, font= "Times 20")
     roll_no_entry.grid(row = 0, column=2,padx=(0,50), pady=(60,30), columnspan=2)
-    name_entry = Entry(f5, textvariable=name, font= "Times 20")
+    name_entry = Entry(f4, textvariable=name, font= "Times 20")
     name_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
 
-    back_button_func(f5)
+    back_button_func(f4)
     # continue button
-    continue_button = Button(f5, text="Continue", font="Times 15 bold", activebackground="#d3b99e", activeforeground='white', command=lambda: continue_func(roll_no.get(), name.get(), had_name, func_n))
+    continue_button = Button(f4, text="Continue", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command=lambda: continue_func(x,y,roll_no.get(), name.get(), had_name, func_n))
     continue_button.grid(row = 2, column=1,pady=30)
     continue_button.bind("<Enter>", continue_button_hover)
     continue_button.bind("<Leave>", continue_button_hover_leave)
-
-    # print(f"roll no = {roll_no.get()} \nname = {name.get()}")
     
 
-# # Frame 6 --------------------------->
-def frame6(rn, na, hn, func_n):
-    global f6, continue_button
-    headline_label.destroy()
-    headline(325,30,hn)
-
-    # creating Frame 6
-    f6 = Frame(win, bg='#d3b99e')
-    f6_window = my_canvas.create_window(330,190, anchor='nw', window=f6)
+# # Frame 5 --------------------------->
+def frame5(x,y,rn, na, hn, func_n):
+    global f5, continue_button
+    
+    # creating Frame 5
+    f5 = Frame(win, bg='#d3d3d3')
+    f5_window = my_canvas.create_window(330,170, anchor='nw', window=f5)
 
     # for print roll no & name 
-    roll_no_label = Label(f6, text="Roll no. :- ", font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=0,padx=(50,0), pady=(60,20))
-    name_label = Label(f6, text="Name :- ", font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=0,padx=(50,0), pady=(0,20))
+    roll_no_label = Label(f5, text="Roll no. :- ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 0, column=0,padx=(50,0), pady=(60,20))
+    name_label = Label(f5, text="Name :- ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 1, column=0,padx=(50,0), pady=(0,20))
 
-    print_roll_no = Label(f6, text=rn , font= "Times 20 bold", bg="#d3b99e").grid(row = 0, column=2,padx=(50,0), pady=(60,20))
-    print_name = Label(f6, text=na , font= "Times 20 bold", bg="#d3b99e").grid(row = 1, column=2,padx=(50,0), pady=(0,20))
+    print_roll_no = Label(f5, text=rn , font= "Times 20 bold", bg="#d3d3d3").grid(row = 0, column=2,padx=(50,0), pady=(60,20))
+    print_name = Label(f5, text=na , font= "Times 20 bold", bg="#d3d3d3").grid(row = 1, column=2,padx=(50,0), pady=(0,20))
 
     # book & author label
-    book_name_label = Label(f6, text="Enter Book name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 2, column=0,padx=(50,0), pady=30)
-    author_name_label = Label(f6, text="Enter Author name - ", font= "Times 20 bold", bg="#d3b99e").grid(row = 3, column=0,padx=(50,0), pady=30)
+    book_name_label = Label(f5, text="Enter Book name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 2, column=0,padx=(50,0), pady=30)
+    author_name_label = Label(f5, text="Enter Author name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 3, column=0,padx=(50,0), pady=30)
 
     # book & author entry
     book_name = StringVar()
     author_name = StringVar()
 
-    book_entry = Entry(f6, textvariable=book_name, font= "Times 20")
+    book_entry = Entry(f5, textvariable=book_name, font= "Times 20")
     book_entry.grid(row = 2, column=2,padx=(0,50), pady=30, columnspan=2)
-    author_entry = Entry(f6, textvariable=author_name, font= "Times 20")
+    author_entry = Entry(f5, textvariable=author_name, font= "Times 20")
     author_entry.grid(row = 3, column=2,padx=(0,50), pady=30, columnspan=2)
 
     # issue/return button function call
     func_n()
 
-    back_from_f6tof5(hn, func_n)
+    back_from_f5tof4(x,y,hn, func_n)
 
 if __name__=='__main__':
     # Normal initializing of the program
@@ -351,24 +396,56 @@ if __name__=='__main__':
     img4 = ImageTk.PhotoImage(image4)
     img5 = ImageTk.PhotoImage(image5)
 
+    books_list = [
+        ["John", "Pepperoni"],
+        ["Mayank", "Das"],
+        ["Mary", "Chees"],
+        ["Deepak", "Kumar"],
+        ["John", "Pepperoni"],
+        ["Mayank", "Das"],
+        ["Mary", "Chees"],
+        ["Deepak", "Kumar"],
+        ["John", "Pepperoni"],
+        ["Mayank", "Das"],
+        ["Mary", "Chees"],
+        ["Deepak", "Kumar"],
+        ["John", "Pepperoni"],
+        ["Mayank", "Das"],
+        ["Mary", "Chees"],
+        ["Deepak", "Kumar"],
+        ["John",  "Pepperoni"],
+        ["Mayank", "Das"],
+        ["Mary", "Chees"],
+        ["Deepak", "kumar"],
+        ["John", "pepperoni"],
+        ["Mayank", "das"],
+        ["Mary", "Chees"],
+        ["Deepak", "kumar"],
+        ["John", "pepperoni"],
+        ["Mayank", "das"],
+        ["mary", "Chees"],
+        ["deepak", "kumar"],
+        ["john", "pepperoni"],
+        ["mayank", "das"],
+        ["mary", "Chees"],
+        ["deepak", "kumar"],
+        ["john", "pepperoni"],
+        ["mayank", "das"],
+        ["mary", "Chees"],
+        ["deepak", "kumar"]
+    ]
+
     # create a canvas ---------
     my_canvas = Canvas(win, width=100, height=100)
     my_canvas.pack(fill="both", expand=True)
-
-    # adding scrollbar 
-    # my_scrollbar = ttk.Scrollbar(win, orient=VERTICAL, command=my_canvas.yview)
-    # my_scrollbar.pack(side=RIGHT, fill=Y)
-    # my_canvas.configure(yscrollcommand=my_scrollbar.set)
-    # my_canvas.bind('<configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
 
     # add image in canvas
     my_canvas.create_image(0,0, image=bg_photo, anchor = "nw")
 
     # add label of library management system in canvas
-    # library_label = my_canvas.create_text(700, 50, text= 'Library Management System', font="Times 50 underline bold")
     def headline(a,b,text1):
         global headline_label
-        headline_label = Label(win, text= text1, font="Times 50 underline bold", bg="#d3b99e")
+        headline_label = Label(win, text= text1, font="Times 50 underline bold", bg="#d3d3d3")
         headline_label_window = my_canvas.create_window(a,b, anchor='nw', window=headline_label)
 
     headline(260,30,"Library Management System")
