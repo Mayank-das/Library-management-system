@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import ttk
 import tkinter.messagebox as msg
+import Database_for_my_library as my_db
 
 # hover effect
 def add_button_hover(e):
@@ -51,6 +52,18 @@ def continue_button_hover(e):
     
 def continue_button_hover_leave(e):
     continue_button.config(bg="SystemButtonFace")
+
+def login_button_hover(e):
+    login_button.config(bg="#cccccc")
+    
+def login_button_hover_leave(e):
+    login_button.config(bg="SystemButtonFace")
+
+def logout_button_hover(e):
+    logout_button.config(bg="#cccccc")
+    
+def logout_button_hover_leave(e):
+    logout_button.config(bg="SystemButtonFace")
 
 # back button
 def back_button_func(text2):
@@ -148,10 +161,67 @@ def return_func():
         if value:
             msg.askokcancel("Return book from library", "Congratulation you successfully return the book")
 
+# login function
+def login(event):
+    global mysqlobj
+    hst = host.get()
+    usr = user.get()
+    pwd = password.get()
+    try:
+        mysqlobj = my_db.connect_mysql(hst, usr, pwd)
+        print(hst, usr, pwd)
+        f0.destroy()
+        frame1()
+
+    except:
+        if (hst=="" or usr=="" or pwd==""):
+            msg.showwarning("Library Management System", "There is no empty field is allowd !\n So please fill all fields ")
+        else:
+            msg.showwarning("Library Management System", "Host name / User name / Password is wrong !\n So please enter right Host name / User name / Password ")
+        # pass
+
+# logout function
+def logout():
+    my_db.close_connection()
+    logout_button.destroy()
+    f1.destroy()
+    frame0()
+
+# Frame 0  -------------------------------->
+def frame0():
+    global f0, login_button, host, user, password
+    # Create a frame 0
+    f0 = Frame(win, bg='#d3d3d3')
+    f0_window = my_canvas.create_window(340,170, anchor='nw', window=f0)
+
+    # host, username & password label
+    host_label = Label(f0, text="Enter Host name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
+    user_label = Label(f0, text="Enter User name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 1, column=0,padx=(50,0), pady=30)
+    password_label = Label(f0, text="Enter Password - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 2, column=0,padx=(50,0), pady=30)
+
+    # host, username & password entry
+    host = StringVar()
+    user = StringVar()
+    password = StringVar()
+
+    host_entry = Entry(f0, textvariable=host, font= "Times 20")
+    host_entry.grid(row = 0, column=2,padx=(0,50), pady=(60,30), columnspan=2)
+    user_entry = Entry(f0, textvariable=user, font= "Times 20")
+    user_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
+    password_entry = Entry(f0, textvariable=password, font= "Times 20")
+    password_entry.grid(row = 2, column=2,padx=(0,50), pady=30, columnspan=2)
+
+    login_button = Button(f0, text="Login", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command= lambda: login(2))
+    login_button.grid(row = 3, column=1,pady=30)
+    login_button.bind("<Return>", login)
+    login_button.bind("<Enter>", login_button_hover)
+    login_button.bind("<Leave>", login_button_hover_leave)
+
 # Frame 1  -------------------------------->
 def frame1():
-    global add_button, delete_button, list_button, issue_button, return_button,f1
-    # Create a frame
+    global add_button, delete_button, list_button, issue_button, return_button,f1, logout_button
+    f0.destroy()
+    # Create a frame 1
     f1 = Frame(win, bg='#d3d3d3')
     f1_window = my_canvas.create_window(260,150, anchor='nw', window=f1)
 
@@ -191,11 +261,17 @@ def frame1():
     return_button.bind("<Enter>", return_button_hover)
     return_button.bind("<Leave>", return_button_hover_leave)
 
+    logout_button = Button(win, text="Logout", font="time 15 bold", activebackground='#d3d3d3', activeforeground='white', command= lambda: logout())
+    logout_button_window = my_canvas.create_window(1250,30, anchor='nw', window=logout_button)
+    logout_button.bind("<Enter>", logout_button_hover)
+    logout_button.bind("<Leave>", logout_button_hover_leave)
+
 # Frame 2 --------------------------->
 def frame2(x, y, head_name, btn):
     global f2
 
     f1.destroy()
+    logout_button.destroy()
     headline_label.destroy()
     headline(x, y, head_name)
 
@@ -222,8 +298,9 @@ def frame2(x, y, head_name, btn):
 
 # Frame 3 --------------------------->
 def frame3():
-    global f3,delete_button
+    global f3
     f1.destroy()
+    logout_button.destroy()
     headline_label.destroy()
     headline(375,30,"All Books in Library")
     
@@ -301,6 +378,7 @@ def frame3():
 def frame4(x,y,had_name, func_n):
     global f4, continue_button, roll_no, name
     f1.destroy()
+    logout_button.destroy()
     headline_label.destroy()
     headline(x,y,had_name)
 
@@ -449,7 +527,7 @@ if __name__=='__main__':
         headline_label_window = my_canvas.create_window(a,b, anchor='nw', window=headline_label)
 
     headline(260,30,"Library Management System")
-    frame1()
+    frame0()
 
     win.state("zoomed")
     win.mainloop()
