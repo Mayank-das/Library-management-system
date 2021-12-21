@@ -37,6 +37,28 @@ def create_db_tables():
     mysqlobj.commit()
     crsr.close()
 
+# find book/ author/ student or any item in table
+def find_itm(t_name, c_name, item):
+    crsr=mysqlobj.cursor()
+    crsr.execute("Use try")
+    itm_list = []
+    crsr.execute("select "+ c_name +" from " + t_name)
+    records = crsr.fetchall()
+    for r in records:
+        itm_list.append(r[0])
+    print(itm_list)
+    if item.title() not in itm_list:
+        return False
+    else:
+        return True
+
+# find book if it present on particular student or not
+def find_bk_by_rn(rn):
+    crsr=mysqlobj.cursor()
+    crsr.execute("Use try")
+    crsr.execute("select work from emp1_db where id =" + rn)
+
+
 # Insert book into table
 def add_book(bk_name, atr_name):
     crsr = mysqlobj.cursor()
@@ -52,20 +74,6 @@ def add_book(bk_name, atr_name):
     mysqlobj.commit()
     crsr.close()
 
-# find book
-def find(bk_name):
-    crsr=mysqlobj.cursor()
-    crsr.execute("Use try")
-    list_b = []
-    crsr.execute("select work from emp2_db")
-    records = crsr.fetchall()
-    for r in records:
-        list_b.append(r[0])
-    
-    if bk_name not in list_b:
-        return False
-    else:
-        return True
 
 # delete book from table
 def delete_book(bk_name):
@@ -73,26 +81,47 @@ def delete_book(bk_name):
     crsr.execute("Use try")
     query = "delete from emp2_db where work = %s"
     values = (bk_name,)
-    boolean = find(bk_name)
+    boolean = find_itm("emp2_db", "work", bk_name)
     if boolean == True:
             crsr.execute(query, values)
             print("deleted successfully")
     else:
-        print("not execute or value does not find")
+        print("value does not find")
 
     mysqlobj.commit()
     crsr.close()
+
+# display all books
+def display_books():
+    crsr = mysqlobj.cursor()
+    crsr.execute("Use try")
+
+    crsr.execute("select * from emp2_db")
+    records = crsr.fetchall()
+    return records
+
+# return book 
+def return_book(rl_n, bk_name):
+    crsr = mysqlobj.cursor()
+    crsr.execute("Use try")
+    boolean = find_bk_by_rn(rl_n)
+    if boolean == True:
+        query = "update emp1_db set work = '' "
+    else:
+        print("you have no book")
 
 if __name__ == '__main__':
     # hst = input("Enter host name : ")
     # usr = input("Enter user name : ")
     # pwd = input("Enter password : ")
-
     # connect_mysql(hst, usr, pwd)
-    connect_mysql('localhost','root', 'mayankpassword')
-    # create_db_tables()
 
-    delete_book('hati')
+    connect_mysql('localhost','root', 'mayankpassword')
+    create_db_tables()
+
+    # delete_book('hati')
+    # print(find("emp1_db", "name", "pururaj"))
+    print(display_books())
 
     # q =0
     # while q==0:
