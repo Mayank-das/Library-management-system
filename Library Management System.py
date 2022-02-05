@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 from tkinter import ttk
 import tkinter.messagebox as msg
 import Database_for_my_library as my_db
+global mysqlobj
 
 # hover effect
 def add_button_hover(e):
@@ -103,13 +104,15 @@ def back_from_f5tof4(x, y, hn, btn_n,btn_f):
 
 # confirm button function
 def confirm_func(bn, an):
-    print(bn, an)
     if bn == "" or an == "":
         msg.showwarning("Library Management System", "No Book name or Author name is found ! So please enter Book name and Author name")
     else:
         value = msg.askyesno("Adding book to library", "Confirm ! Do you want to add book in Library")
+        book_name.set("")
+        author_name.set("")
         if value:
-            msg.askokcancel("Adding book to library", "Congratulation your book added successfully")
+            my_db.add_book(bn, an)
+            # msg.askokcancel("Adding book to library", "Congratulation your book added successfully")
 
 # delete button function
 def delete_func(bn,an):
@@ -117,49 +120,70 @@ def delete_func(bn,an):
         msg.showwarning("Library Management System", "No Book name or Author name is found ! So please enter Book name and Author name")
     else:
         value = msg.askyesno("Deleting book from library", "Confirm ! Do you want to delete book from Library")
+        book_name.set("")
+        author_name.set("")
         if value:
-            msg.askokcancel("Deleting book from library", "Congratulation you successfully delete the book")
+            my_db.delete_book(bn)
+            # msg.askokcancel("Deleting book from library", "Congratulation you successfully delete the book")
 
-# Issue's continue button function
-def continue_func(x,y,rn, na, hn, btn_n, btn_f):
-    if rn == "" or na == "":
-        msg.showwarning("Library Management System", "No Name or Roll no is found ! So please enter Name and Roll no")
+# Issue and return page continue button function
+def continue_func(x,y,rn, hn, btn_n, btn_f):
+    if rn == "":
+        msg.showwarning("Library Management System", "No Roll number is found ! So please enter Roll no.")
     
     else :
         try:
             int(rn)
-            f4.destroy()
-            back_button.destroy()
-            frame5(x,y,rn,na, hn, btn_n, btn_f)
+            bol = my_db.find_itm("student_table", "id", rn)
+            if bol == True:
+                na = my_db.fetch_stu_name(rn, hn)
+                f4.destroy()
+                back_button.destroy()
+                frame5(x,y,rn,na, hn, btn_n, btn_f)
+            else:
+                msg.showwarning("Library Management System", "The given roll no is not find")
         except:
             msg.askokcancel("Library Management System", "Roll no must be integer ! So please enter right Roll no")
 
 # Issue book function
-def issue_func(bn, an):
-    if bn == "" or an == "":
+def issue_func(rn, bn, an, hn):
+    if bn == "" and an == "":
         msg.showwarning("Issue book from library", "No Book name or Author name is found ! So please enter Book name and Author name")
     else:
-        value = msg.askyesno("Issue book from library", "Confirm ! Do you want to issue book from Library")
-        if value:
-            msg.askokcancel("Issue book from library", "Congratulation you successfully issue the book")
+        bk_or_athr = my_db.find_book_and_author(bn, hn)
+        if bk_or_athr != False:
+            value = msg.askyesno("Issue book from library", f"Book name = {bk_or_athr[0][0]} \nAuthor name = {bk_or_athr[0][1]} \n\nConfirm ! Do you want to issue this book from Library")
+            book_name.set("")
+            author_name.set("")
+            if value:
+                my_db.issue_book(rn, bn)
 
 # Return book function
-def return_func(bn, an):
-    if bn == "" or an == "":
+def return_func(rn, bn, an, hn):
+    if bn == "" and an == "":
         msg.showwarning("Return book to library", "No Book name or Author name is found ! So please enter Book name and Author name")
+    elif bn == "" :
+        bk_or_athr = my_db.find_book_and_author(bn, hn)
+        if bk_or_athr != False:
+            # func
+            value = msg.askyesno("Return book to library", f"Book name = {bk_or_athr[0][0]} \nAuthor name = {bk_or_athr[0][1]} \n\nConfirm ! Do you want to return this book to Library")
     else:
-        value = msg.askyesno("Return book to library", "Confirm ! Do you want to return book to Library")
-        if value:
-            msg.askokcancel("Return book to library", "Congratulation you successfully return the book")
+        bk_or_athr = my_db.find_book_and_author(bn, hn)
+        if bk_or_athr != False:
+            value = msg.askyesno("Return book to library", f"Book name = {bk_or_athr[0][0]} \nAuthor name = {bk_or_athr[0][1]} \n\nConfirm ! Do you want to return this book to Library")
+            if value:
+                my_db.return_book(rn, bn)
+                book_name.set("")
+                author_name.set("")
 
 # login function
 def login(event):
-    global mysqlobj
     hst = host.get()
     usr = user.get()
     pwd = password.get()
     try:
         mysqlobj = my_db.connect_mysql(hst.strip(), usr.strip(), pwd.strip())
+        my_db.create_db_tables()
         f0.destroy()
         frame1()
 
@@ -257,7 +281,7 @@ def frame1():
 
 # Frame 2 --------------------------->
 def frame2(x, y, head_name, btn_n, btn_f):
-    global f2, ad_button
+    global f2, ad_button, book_name, author_name
 
     f1.destroy()
     logout_button.destroy()
@@ -299,7 +323,7 @@ def frame3():
     
     # creating Frame 3
     f3 = Frame(win, bg='#d3d3d3')
-    f3_window = my_canvas.create_window(400,190, anchor='nw', window=f3)
+    f3_window = my_canvas.create_window(380,190, anchor='nw', window=f3)
 
     # Treeview Scrollbar
     tree_scroll = Scrollbar(f3, bg="#d3d3d3")
@@ -315,7 +339,7 @@ def frame3():
         background="#d3d3d3",
         foreground="black",
         rowheight=35,
-        font="times 13 ",
+        font="times 12 ",
         fieldbackground="#d3d3d3"
         )
 
@@ -337,17 +361,17 @@ def frame3():
     tree_scroll.config(command=my_tree.yview)
 
     # define our columns 
-    my_tree['columns']= ("Name", "L_Name")
+    my_tree['columns']= ("B_Name", "A_Name")
 
     # formate our columns
     my_tree.column('#0', width=80, minwidth=0)
-    my_tree.column('Name', anchor=CENTER, width=200, minwidth=50)
-    my_tree.column('L_Name', anchor=CENTER, width=200)
+    my_tree.column('B_Name', anchor=W, width=250, minwidth=50)
+    my_tree.column('A_Name', anchor=W, width=200)
 
     # create headings
-    my_tree.heading("#0", text="No.", anchor=W)
-    my_tree.heading("Name",text="Name", anchor=CENTER)
-    my_tree.heading("L_Name",text="Last Name", anchor=CENTER)
+    my_tree.heading("#0", text="Id", anchor=W)
+    my_tree.heading("B_Name",text="Book Name", anchor=CENTER)
+    my_tree.heading("A_Name",text="Author Name", anchor=CENTER)
     # change font of heading
     style.configure("Treeview.Heading", font="times 15 bold")
 
@@ -355,6 +379,7 @@ def frame3():
     my_tree.tag_configure("oddrow", background="white")
     my_tree.tag_configure("evenrow", background="lightblue")
 
+    books_list = my_db.display_books()
     cont = 0
     for item in books_list:
         if cont % 2 == 0:
@@ -377,34 +402,30 @@ def frame4(x,y,had_name, btn_n, btn_f):
 
     # creating Frame 4
     f4 = Frame(win, bg='#d3d3d3')
-    f4_window = my_canvas.create_window(330,190, anchor='nw', window=f4)
+    f4_window = my_canvas.create_window(330,220, anchor='nw', window=f4)
 
-    # for ask roll no & name label
-    roll_no_label = Label(f4, text="Enter Roll no. - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
-    name_label = Label(f4, text="Enter Your Name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 1, column=0,padx=(50,0), pady=30)
+    # for ask roll no
+    roll_no_label = Label(f4, text="Enter Roll no. - ", font= "Times 25 bold", bg="#d3d3d3").grid(row = 0, column=0,padx=(50,0), pady=(80,30))
 
-    # roll no & name entry
+    # roll no entry
     roll_no = StringVar()
-    name = StringVar()
 
     roll_no.set("")
 
     roll_no_entry = Entry(f4, textvariable=roll_no, font= "Times 20")
-    roll_no_entry.grid(row = 0, column=2,padx=(0,50), pady=(60,30), columnspan=2)
-    name_entry = Entry(f4, textvariable=name, font= "Times 20")
-    name_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
+    roll_no_entry.grid(row = 0, column=2,padx=(0,50), pady=(80,30), columnspan=2)
 
     back_button_func(f4)
     # continue button
-    continue_button = Button(f4, text="Continue", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command=lambda: continue_func(x,y,roll_no.get(), name.get(), had_name, btn_n, btn_f))
-    continue_button.grid(row = 2, column=1,pady=30)
+    continue_button = Button(f4, text="Continue", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command=lambda: continue_func(x,y,roll_no.get(), had_name, btn_n, btn_f))
+    continue_button.grid(row = 2, column=1,pady=(30,50))
     continue_button.bind("<Enter>", continue_button_hover)
     continue_button.bind("<Leave>", continue_button_hover_leave)
     
 
 # # Frame 5 --------------------------->
 def frame5(x,y,rn, na, hn, btn_n, btn_f):
-    global f5, isu_rtn_button
+    global f5, isu_rtn_button, book_name, author_name
     
     # creating Frame 5
     f5 = Frame(win, bg='#d3d3d3')
@@ -418,21 +439,22 @@ def frame5(x,y,rn, na, hn, btn_n, btn_f):
     print_name = Label(f5, text=na , font= "Times 20 bold", bg="#d3d3d3").grid(row = 1, column=2,padx=(50,0), pady=(0,20))
 
     # book & author label
-    book_name_label = Label(f5, text="Enter Book name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 2, column=0,padx=(50,0), pady=30)
-    author_name_label = Label(f5, text="Enter Author name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 3, column=0,padx=(50,0), pady=30)
+    book_name_label = Label(f5, text="Enter Book name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 2, column=0,padx=(50,0), pady=20)
+    or_label = Label(f5, text="or", font= "Times 20 bold", bg="#d3d3d3").grid(row = 3, column=1)
+    author_name_label = Label(f5, text="Enter Author name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 4, column=0,padx=(50,0), pady=20)
 
     # book & author entry
     book_name = StringVar()
     author_name = StringVar()
 
     book_entry = Entry(f5, textvariable=book_name, font= "Times 20")
-    book_entry.grid(row = 2, column=2,padx=(0,50), pady=30, columnspan=2)
+    book_entry.grid(row = 2, column=2,padx=(0,50), pady=20, columnspan=2)
     author_entry = Entry(f5, textvariable=author_name, font= "Times 20")
-    author_entry.grid(row = 3, column=2,padx=(0,50), pady=30, columnspan=2)
+    author_entry.grid(row = 4, column=2,padx=(0,50), pady=20, columnspan=2)
 
     # issue/return button function call
-    isu_rtn_button = Button(f5, text=btn_n , font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command=lambda: btn_f(book_name.get(),author_name.get()))
-    isu_rtn_button.grid(row = 4, column=1,pady=30)
+    isu_rtn_button = Button(f5, text=btn_n , font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command=lambda: btn_f(rn, book_name.get(),author_name.get(), hn))
+    isu_rtn_button.grid(row = 5, column=1,pady=30)
     isu_rtn_button.bind("<Enter>", isu_rtn_button_hover)
     isu_rtn_button.bind("<Leave>", isu_rtn_button_hover_leave)
 
@@ -469,45 +491,6 @@ if __name__=='__main__':
     img3 = ImageTk.PhotoImage(image3)
     img4 = ImageTk.PhotoImage(image4)
     img5 = ImageTk.PhotoImage(image5)
-
-    books_list = [
-        ["John", "Pepperoni"],
-        ["Mayank", "Das"],
-        ["Mary", "Chees"],
-        ["Deepak", "Kumar"],
-        ["John", "Pepperoni"],
-        ["Mayank", "Das"],
-        ["Mary", "Chees"],
-        ["Deepak", "Kumar"],
-        ["John", "Pepperoni"],
-        ["Mayank", "Das"],
-        ["Mary", "Chees"],
-        ["Deepak", "Kumar"],
-        ["John", "Pepperoni"],
-        ["Mayank", "Das"],
-        ["Mary", "Chees"],
-        ["Deepak", "Kumar"],
-        ["John",  "Pepperoni"],
-        ["Mayank", "Das"],
-        ["Mary", "Chees"],
-        ["Deepak", "kumar"],
-        ["John", "pepperoni"],
-        ["Mayank", "das"],
-        ["Mary", "Chees"],
-        ["Deepak", "kumar"],
-        ["John", "pepperoni"],
-        ["Mayank", "das"],
-        ["mary", "Chees"],
-        ["deepak", "kumar"],
-        ["john", "pepperoni"],
-        ["mayank", "das"],
-        ["mary", "Chees"],
-        ["deepak", "kumar"],
-        ["john", "pepperoni"],
-        ["mayank", "das"],
-        ["mary", "Chees"],
-        ["deepak", "kumar"]
-    ]
 
     # create a canvas ---------
     my_canvas = Canvas(win, width=100, height=100)

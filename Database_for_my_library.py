@@ -26,8 +26,8 @@ def create_db_tables():
     print("using database successfully")
     
     crsr.execute("create table IF NOT EXISTS Book_table(Book varchar(50) primary key, Author varchar(50))")
-    print("table Created successfully")
     crsr.execute("create table IF NOT EXISTS Student_table(Id int primary key, Name varchar(50), Book varchar(50), foreign key (Book) references Book_table(Book))")
+    print("tables Created successfully")
 
     query_book = "INSERT INTO Book_table(Book, Author) values(%s, %s)"
     value_book = [("Fundamental Of Computer Science", " P K  Sinha"),
@@ -40,7 +40,7 @@ def create_db_tables():
                 ("Business Data Processing", "Elias M Awad"),
                 ("Organisational Behabior", "L M Prasad"),
                 ("Mathematics II", "H K Prasad"),
-                ("Object Oriented Programming In C++", "E Balaguruswami"),
+                ("Object Oriented Programming In C++", "E Balaguruswamy"),
                 ("System Analysis And Design", "Elias M Awad"),
                 ("Discrete Mathematics", "Marc Lipson"),
                 ("Database Management System", "Sudarshan"),
@@ -95,10 +95,17 @@ def find_itm(t_name, c_name, item):
     records = crsr.fetchall()
     for r in records:
         itm_list.append(r[0])
-    if item.title() not in itm_list:
-        return False
-    else:
-        return True
+    try:
+        item = int(item)
+        if item not in itm_list:
+            return False
+        else:
+            return True
+    except:
+        if item.title() not in itm_list:
+            return False
+        else:
+            return True
 
 # find book if it present on particular student or not
 def find_bk_by_rn(heading, rn):
@@ -164,6 +171,36 @@ def display_books():
     records = crsr.fetchall()
     return records
 
+# Fatch student name
+def fetch_stu_name(rn, heading):
+    crsr = mysqlobj.cursor()
+    crsr.execute("Use My_Library_Database")
+
+    crsr.execute(f"select Name from student_table where id = '{rn}'")
+    name = crsr.fetchone()
+    if name == None:
+        msg.showwarning(heading, "The given roll no is not exist")
+
+    return name[0]
+
+
+# Find book and author
+def find_book_and_author(bk, atr, heading):
+    crsr = mysqlobj.cursor()
+    crsr.execute("Use My_Library_Database")
+
+    if bk == "":
+        crsr.execute(f"select * from Book_table where author = '{atr}'")
+        bk_or_atr = crsr.fetchall()
+    elif atr == "":
+        crsr.execute(f"select * from Book_table where book = '{bk}'")
+        bk_or_atr = crsr.fetchall()
+    if bk_or_atr == []:
+        msg.showwarning(heading, "You entered wrong book name")
+        return False
+    else:
+        return bk_or_atr
+
 # Issue book 
 def issue_book(rl_n, bk_name):
     crsr = mysqlobj.cursor()
@@ -191,7 +228,7 @@ def return_book(rl_n, bk_name):
     crsr = mysqlobj.cursor()
     crsr.execute("Use My_Library_Database")
     boolean = find_bk_by_rn("Return book to library", rl_n)
-    if boolean == bk_name:
+    if boolean == bk_name.title():
         crsr.execute(f"update Student_table set book = null where id = {rl_n}")
         mysqlobj.commit()
         msg.showinfo("Return book to library", "Successfully return the book")
@@ -220,32 +257,35 @@ if __name__ == '__main__':
     # print(find_bk_by_rn(1))
     # issue_book(1, 'ayank')
 
-    q =0
-    while q==0:
-        n=input("1. add book\n2. delete book\n3. display all books\n4. issue book\n5. return book\n9. for quit \nchoose any value:")
+    # q =0
+    # while q==0:
+    #     n=input("1. add book\n2. delete book\n3. display all books\n4. issue book\n5. return book\n9. for quit \nchoose any value:")
 
-        if n=='1':
-            bk = input("Enter book name :")
-            at = input("Enter author name :")
-            add_book(bk,at)
-        elif n=='2':
-            bk = input("Enter book name :")
-            delete_book(bk)
-        elif n=='3':
-            lst = display_books()
-            n=0
-            for i in lst:
-                n+=1
-                print(str(n) +"). "+i[0]+ "  "+ i[1])
-        elif n=='4':
-            bk = input("Enter book name :")
-            rn = input("Enter your roll no :")
-            issue_book(rn, bk)
-        elif n=='5':
-            bk = input("Enter book name :")
-            rn = input("Enter your roll no :")
-            return_book(rn,bk)
-        elif n=='9':
-            q += 1
-        else:
-            print("not valid")
+    #     if n=='1':
+    #         bk = input("Enter book name :")
+    #         at = input("Enter author name :")
+    #         add_book(bk,at)
+    #     elif n=='2':
+    #         bk = input("Enter book name :")
+    #         delete_book(bk)
+    #     elif n=='3':
+    #         lst = display_books()
+    #         n=0
+    #         for i in lst:
+    #             n+=1
+    #             print(str(n) +"). "+i[0]+ "  "+ i[1])
+    #     elif n=='4':
+    #         bk = input("Enter book name :")
+    #         rn = input("Enter your roll no :")
+    #         issue_book(rn, bk)
+    #     elif n=='5':
+    #         bk = input("Enter book name :")
+    #         rn = input("Enter your roll no :")
+    #         return_book(rn,bk)
+    #     elif n=='9':
+    #         q += 1
+    #     else:
+    #         print("not valid")
+
+    kl = find_book_and_author("","e balaguruswamy","library")
+    print(len(kl))
