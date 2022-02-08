@@ -89,7 +89,7 @@ def back_button_func(text2):
         fr.destroy()
         frame1()
 
-# back from frame 6 to frame 5
+# back from frame 5 to frame 4
 def back_from_f5tof4(x, y, hn, btn_n,btn_f):
     global back_button
     back_button = Button(win, text="← Back", font="time 15 bold", activebackground='#d3d3d3', activeforeground='white', command= lambda: back_func2(hn, btn_n, btn_f))
@@ -112,7 +112,6 @@ def confirm_func(bn, an):
         author_name.set("")
         if value:
             my_db.add_book(bn, an)
-            # msg.askokcancel("Adding book to library", "Congratulation your book added successfully")
 
 # delete button function
 def delete_func(bn,an):
@@ -124,7 +123,6 @@ def delete_func(bn,an):
         author_name.set("")
         if value:
             my_db.delete_book(bn)
-            # msg.askokcancel("Deleting book from library", "Congratulation you successfully delete the book")
 
 # Issue and return page continue button function
 def continue_func(x,y,rn, hn, btn_n, btn_f):
@@ -145,31 +143,95 @@ def continue_func(x,y,rn, hn, btn_n, btn_f):
         except:
             msg.askokcancel("Library Management System", "Roll no must be integer ! So please enter right Roll no")
 
+# This function is created for choosing a particular book of any author
+def radiobuttons(lst, hn):
+    global count
+    count = 0
+    def ok_button_hover(e):
+        ok_button.config(bg="#d6eaf8")
+    
+    def ok_button_hover_leave(e):
+        ok_button.config(bg="#E5E7E9")
+    
+    def cancel_button_hover(e):
+        cancel_button.config(bg="#d6eaf8")
+    
+    def cancel_button_hover_leave(e):
+        cancel_button.config(bg="#E5E7E9")
+    
+    def ok_end():
+        global count
+        root.destroy()
+        count +=1
+
+    def cancel_end():
+        root.destroy()
+        
+    root = Tk()
+    root.geometry("420x145")
+    if len(lst) >= 4:
+        root.geometry("420x160")
+    root.title(hn)
+    root.wm_iconbitmap(r"Images\Icon image\My_Library_icon.ico")
+    Label(root, text="Please select Book", font=("times", 15, "bold", "underline"), anchor='n', bg='white').pack()
+    
+    val = StringVar()
+    val.set(1)
+
+    for a in range(0, len(lst)):
+        Radiobutton(root, text=f"{lst[a][0]} by {lst[a][1]}", padx=10, variable = val, value=a+1, font=("times", 10), bg='white').pack(anchor=W, pady=0)
+
+    frame = Frame(root, bg="#F2F3F4", relief=SUNKEN)
+    frame.pack(anchor=NW,fill=BOTH, expand=True)
+
+    ok_button = Button(frame, text="OK",border=0, borderwidth=1, bg="#E5E7E9", padx=30, relief=SOLID, command= ok_end)
+    cancel_button = Button(frame, text="Cancel", border=0, borderwidth=1, bg="#E5E7E9", padx=15, relief=SOLID, command= cancel_end)
+    
+    cancel_button.pack(side=RIGHT, padx=10, pady=5, anchor=E)
+    ok_button.pack(side=RIGHT, padx=10, pady=5, anchor=E)
+    ok_button.bind("<Enter>", ok_button_hover)
+    ok_button.bind("<Leave>", ok_button_hover_leave)
+    cancel_button.bind("<Enter>", cancel_button_hover)
+    cancel_button.bind("<Leave>", cancel_button_hover_leave)
+
+    root.resizable(0,0)
+    root.configure(bg='white')
+    root.mainloop(1)
+
+    if count == 0:
+        return False
+    else:
+        return lst[int(val.get())-1]
+
 # Issue book function
 def issue_func(rn, bn, an, hn):
     if bn == "" and an == "":
         msg.showwarning("Issue book from library", "No Book name or Author name is found ! So please enter Book name and Author name")
     else:
-        bk_or_athr = my_db.find_book_and_author(bn, hn)
+        bk_or_athr = my_db.find_book_and_author(bn, an, hn)
+        if len(bk_or_athr)>1:
+            bk_or_athr = [radiobuttons(bk_or_athr, hn)]
+
         if bk_or_athr != False:
+            bn = bk_or_athr[0][0]
             value = msg.askyesno("Issue book from library", f"Book name = {bk_or_athr[0][0]} \nAuthor name = {bk_or_athr[0][1]} \n\nConfirm ! Do you want to issue this book from Library")
-            book_name.set("")
-            author_name.set("")
+            
             if value:
                 my_db.issue_book(rn, bn)
+                book_name.set("")
+                author_name.set("")
 
 # Return book function
 def return_func(rn, bn, an, hn):
     if bn == "" and an == "":
         msg.showwarning("Return book to library", "No Book name or Author name is found ! So please enter Book name and Author name")
-    elif bn == "" :
-        bk_or_athr = my_db.find_book_and_author(bn, hn)
-        if bk_or_athr != False:
-            # func
-            value = msg.askyesno("Return book to library", f"Book name = {bk_or_athr[0][0]} \nAuthor name = {bk_or_athr[0][1]} \n\nConfirm ! Do you want to return this book to Library")
     else:
-        bk_or_athr = my_db.find_book_and_author(bn, hn)
+        bk_or_athr = my_db.find_book_and_author(bn, an, hn)
+        if len(bk_or_athr)>1:
+            bk_or_athr = [radiobuttons(bk_or_athr, hn),]
+
         if bk_or_athr != False:
+            bn = bk_or_athr[0][0]
             value = msg.askyesno("Return book to library", f"Book name = {bk_or_athr[0][0]} \nAuthor name = {bk_or_athr[0][1]} \n\nConfirm ! Do you want to return this book to Library")
             if value:
                 my_db.return_book(rn, bn)

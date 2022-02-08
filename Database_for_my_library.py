@@ -30,7 +30,7 @@ def create_db_tables():
     print("tables Created successfully")
 
     query_book = "INSERT INTO Book_table(Book, Author) values(%s, %s)"
-    value_book = [("Fundamental Of Computer Science", " P K  Sinha"),
+    value_book = [("Fundamental Of Computer Science", "P K Sinha"),
                 ("Digital Electronics And Computer Organization", "M M Mano"),
                 ("Mathematics I", "Gorakh Prasad"),
                 ("Principles Of Management", "L M Prasad"),
@@ -192,9 +192,10 @@ def find_book_and_author(bk, atr, heading):
     if bk == "":
         crsr.execute(f"select * from Book_table where author = '{atr}'")
         bk_or_atr = crsr.fetchall()
-    elif atr == "":
+    else:
         crsr.execute(f"select * from Book_table where book = '{bk}'")
         bk_or_atr = crsr.fetchall()
+
     if bk_or_atr == []:
         msg.showwarning(heading, "You entered wrong book name")
         return False
