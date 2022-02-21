@@ -111,18 +111,16 @@ def confirm_func(bn, an):
         book_name.set("")
         author_name.set("")
         if value:
-            my_db.add_book(bn, an)
+            my_db.add_book(bn.strip(), an.strip())
 
 # delete button function
 def delete_func(bn,an):
     if bn == "" or an == "":
         msg.showwarning("Library Management System", "No Book name or Author name is found ! So please enter Book name and Author name")
     else:
-        value = msg.askyesno("Deleting book from library", "Confirm ! Do you want to delete book from Library")
         book_name.set("")
         author_name.set("")
-        if value:
-            my_db.delete_book(bn)
+        my_db.delete_book(bn.strip())
 
 # Issue and return page continue button function
 def continue_func(x,y,rn, hn, btn_n, btn_f):
@@ -208,7 +206,7 @@ def issue_func(rn, bn, an, hn):
     if bn == "" and an == "":
         msg.showwarning("Issue book from library", "No Book name or Author name is found ! So please enter Book name and Author name")
     else:
-        bk_or_athr = my_db.find_book_and_author(bn, an, hn)
+        bk_or_athr = my_db.find_book_and_author(bn.strip(), an.strip(), hn)
         if len(bk_or_athr)>1:
             bk_or_athr = [radiobuttons(bk_or_athr, hn)]
 
@@ -226,7 +224,7 @@ def return_func(rn, bn, an, hn):
     if bn == "" and an == "":
         msg.showwarning("Return book to library", "No Book name or Author name is found ! So please enter Book name and Author name")
     else:
-        bk_or_athr = my_db.find_book_and_author(bn, an, hn)
+        bk_or_athr = my_db.find_book_and_author(bn.strip(), an.strip(), hn)
         if len(bk_or_athr)>1:
             bk_or_athr = [radiobuttons(bk_or_athr, hn),]
 
@@ -239,7 +237,7 @@ def return_func(rn, bn, an, hn):
                 author_name.set("")
 
 # login function
-def login(event):
+def login(e):
     hst = host.get()
     usr = user.get()
     pwd = password.get()
@@ -270,9 +268,11 @@ def frame0():
     f0_window = my_canvas.create_window(340,170, anchor='nw', window=f0)
 
     # host, username & password label
-    host_label = Label(f0, text="Enter Host name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 0, column=0,padx=(50,0), pady=(60,30))
-    user_label = Label(f0, text="Enter User name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 1, column=0,padx=(50,0), pady=30)
-    password_label = Label(f0, text="Enter Password - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 2, column=0,padx=(50,0), pady=30)
+    Label(f0, text="Login", font= "Times 35 bold", bg="#d3d3d3").grid(row = 0, column=0, pady=(15,0), columnspan=4)
+    Label(f0, text="Please login using your Mysql details", font= "Times 10 bold", bg="#d3d3d3", padx=100).grid(row = 1, column=0, padx=120, columnspan=4)
+    host_label = Label(f0, text="Enter Host name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 2, column=0,padx=(50,0), pady=(30,20))
+    user_label = Label(f0, text="Enter User name - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 3, column=0,padx=(50,0), pady=20)
+    password_label = Label(f0, text="Enter Password - ", font= "Times 20 bold", bg="#d3d3d3").grid(row = 4, column=0,padx=(50,0), pady=(20,30))
 
     # host, username & password entry
     host = StringVar()
@@ -280,14 +280,14 @@ def frame0():
     password = StringVar()
 
     host_entry = Entry(f0, textvariable=host, font= "Times 20")
-    host_entry.grid(row = 0, column=2,padx=(0,50), pady=(60,30), columnspan=2)
+    host_entry.grid(row = 2, column=1,padx=(20,60), pady=(30,20), columnspan=3)
     user_entry = Entry(f0, textvariable=user, font= "Times 20")
-    user_entry.grid(row = 1, column=2,padx=(0,50), pady=30, columnspan=2)
-    password_entry = Entry(f0, textvariable=password, font= "Times 20")
-    password_entry.grid(row = 2, column=2,padx=(0,50), pady=30, columnspan=2)
+    user_entry.grid(row = 3, column=1,padx=(20,60), pady=30, columnspan=3)
+    password_entry = Entry(f0, show='*', textvariable=password, font= "Times 20")
+    password_entry.grid(row = 4, column=1,padx=(20,60), pady=30, columnspan=3)
 
-    login_button = Button(f0, text="Login", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', command= lambda: login(2))
-    login_button.grid(row = 3, column=1,pady=30)
+    login_button = Button(f0, text="Login", font="Times 15 bold", activebackground="#d3d3d3", activeforeground='white', padx = 35, pady = 0, command= lambda: login(0))
+    login_button.grid(row = 5, column=0,pady=30, columnspan=4)
     login_button.bind("<Return>", login)
     login_button.bind("<Enter>", login_button_hover)
     login_button.bind("<Leave>", login_button_hover_leave)

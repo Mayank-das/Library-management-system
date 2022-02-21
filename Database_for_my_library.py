@@ -151,6 +151,9 @@ def delete_book(bk_name):
     boolean = find_itm("Book_table", "book", bk_name)
     if boolean == True:
         try:
+            value = msg.askyesno("Deleting book from library", "Confirm ! Do you want to delete book from Library")
+            if not value:
+                return ()
             crsr.execute(query, values)
             msg.showinfo("Deleting book from library", "Congratulation you successfully delete the book")
 
